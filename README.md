@@ -1186,7 +1186,7 @@ The get() method of the URLSearchParams object retrieves the value of a specific
 
 #### Controlled Input (kinda/sorta)
 
-Landing.js
+Landing.jsx
 
 ```js
 const Landing = () => {
