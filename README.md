@@ -46,7 +46,7 @@ export default App;
 
 - pages are components
 - create src/pages
-- About, Cocktail, Error, HomeLayout, Landing, Newsletter, index.js
+- About, CocktailCard, Error, HomeLayout, Landing, Newsletter, index.js
 - export from index.js
 
 pages/index.js
@@ -54,7 +54,7 @@ pages/index.js
 ```js
 export { default as Landing } from './Landing';
 export { default as About } from './About';
-export { default as Cocktail } from './Cocktail';
+export { default as CocktailCard } from './CocktailCard';
 export { default as Newsletter } from './Newsletter';
 export { default as HomeLayout } from './HomeLayout';
 export { default as Error } from './Error';
@@ -69,7 +69,7 @@ import {
   Landing,
   Error,
   Newsletter,
-  Cocktail,
+  CocktailCard,
 } from './pages';
 ```
 
@@ -122,7 +122,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'cocktail',
-        element: <Cocktail />,
+        element: <CocktailCard />,
       },
       {
         path: 'newsletter',
@@ -732,12 +732,12 @@ const HomeLayout = () => {
 export default HomeLayout;
 ```
 
-#### Single Cocktail
+#### Single CocktailCard
 
 App.jsx
 
 ```js
-import { loader as singleCocktailLoader } from './pages/Cocktail';
+import { loader as singleCocktailLoader } from './pages/CocktailCard';
 
 const router = createBrowserRouter([
   {
@@ -748,7 +748,7 @@ const router = createBrowserRouter([
       {
         path: 'cocktail/:id',
         loader: singleCocktailLoader,
-        element: <Cocktail />,
+        element: <CocktailCard />,
         errorElement: <SinglePageError />,
       },
       // rest of the routes
@@ -757,7 +757,7 @@ const router = createBrowserRouter([
 ]);
 ```
 
-Cocktail.jsx
+CocktailCard.jsx
 
 ```js
 const singleCocktailUrl =
@@ -773,7 +773,7 @@ export const loader = async ({ params }) => {
   return { id, data };
 };
 
-const Cocktail = () => {
+const CocktailCard = () => {
   const { id, data } = useLoaderData();
 
   const singleDrink = data.drinks[0];
@@ -833,13 +833,13 @@ const Cocktail = () => {
   );
 };
 
-export default Cocktail;
+export default CocktailCard;
 ```
 
 #### Additional Check
 
 ```js
-const Cocktail = () => {
+const CocktailCard = () => {
   import { Navigate } from 'react-router-dom';
   const { id, data } = useLoaderData();
   // if (!data) return <h2>something went wrong...</h2>;
@@ -848,7 +848,7 @@ const Cocktail = () => {
 };
 ```
 
-#### Single Cocktail CSS (optional)
+#### Single CocktailCard CSS (optional)
 
 assets/wrappers/CocktailPage.js
 
@@ -1325,7 +1325,7 @@ export const loader =
   };
 ```
 
-#### React Query - Cocktail
+#### React Query - CocktailCard
 
 App.jsx
 
@@ -1341,7 +1341,7 @@ const router = createBrowserRouter([
         path: 'cocktail/:id',
         loader: singleCocktailLoader(queryClient),
         errorElement: <h2>There was an error...</h2>,
-        element: <Cocktail />,
+        element: <CocktailCard />,
       },
       ....
     ],
@@ -1349,7 +1349,7 @@ const router = createBrowserRouter([
 ]);
 ```
 
-Cocktail.jsx
+CocktailCard.jsx
 
 ```js
 import { useQuery } from '@tanstack/react-query';
@@ -1378,7 +1378,7 @@ export const loader =
     return { id };
   };
 
-const Cocktail = () => {
+const CocktailCard = () => {
   const { id } = useLoaderData();
   const { data } = useQuery(singleCocktailQuery(id));
   // rest of the code
