@@ -1,23 +1,35 @@
-import {useLoaderData, Link, Navigate} from "react-router-dom";
+import { useLoaderData, Link, Navigate } from "react-router-dom";
 import axios from "axios";
 import Wrapper from "../assets/wrappers/CocktailPage.js";
+
+import { useQuery } from "@tanstack/react-query";
+
+const singleCocktailQuery = (id) => {
+  return {
+    queryKey: ["cocktail", id],
+    queryFn: async () => {
+      const { data } = await axios.get(`${singleCocktailUrl}${id}`);
+      return data;
+    },
+  };
+};
 
 const singleCocktailUrl =
   "https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=";
 
-export const loader = async ({ params }) => {
-  const { id } = params;
-  const { data } = await axios.get(`${singleCocktailUrl}${id}`);
-
-  return { id, data };
-};
+export const loader =
+  (queryClient) =>
+  async ({ params }) => {
+    const { id } = params;
+    await queryClient.ensureQueryData(singleCocktailQuery(id));
+    return { id };
+  };
 
 const Cocktail = () => {
-  const { id, data } = useLoaderData();
+  const { id } = useLoaderData();
 
-  // if (!data) return <h2>smotehing went wrong...</h2>;
-  if (!data) return <Navigate to='/'/>;
-
+  const { data } = useQuery(singleCocktailQuery(id));
+  if (!data) return <Navigate to="/" />;
 
   const singleDrink = data.drinks[0];
   console.log(singleDrink);
@@ -29,11 +41,14 @@ const Cocktail = () => {
     strCategory: category,
     strInstructions: instructions,
   } = singleDrink;
-console.log(singleDrink)
+  console.log(singleDrink);
 
-  const validIngredients = Object.keys(singleDrink).filter
-  ((key) => key.startsWith('strIngredient') && singleDrink [key] !== null).map((key)=> singleDrink[key]);
-console.log(validIngredients)
+  const validIngredients = Object.keys(singleDrink)
+    .filter(
+      (key) => key.startsWith("strIngredient") && singleDrink[key] !== null
+    )
+    .map((key) => singleDrink[key]);
+  console.log(validIngredients);
 
   return (
     <Wrapper>
@@ -64,11 +79,15 @@ console.log(validIngredients)
           </p>
           <p>
             <span className="drink-data"> ingredients:</span>
-            {validIngredients.map((item, index)=> {
-              return <span className='ing' key={item}>
-                {item}{index< validIngredients.length - 1? ',':''}
-              </span>
+            {validIngredients.map((item, index) => {
+              return (
+                <span className="ing" key={item}>
+                  {item}
+                  {index < validIngredients.length - 1 ? "," : ""}
+                </span>
+              );
             })}
+            ;
           </p>
           <p>
             <span className="drink-data"> instructions:</span>
